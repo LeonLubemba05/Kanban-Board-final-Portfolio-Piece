@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kanban</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <aside id="sidebar" class="sidebar" aria-label="Sidebar">
+      <!-- Logo: swaps between logo-light.svg and logo-dark.svg via theme.js -->
+      <div class="sidebar__logo">
+        <img
+          id="sidebar-logo"
+          src="assets/logo-light.svg"
+          alt="Kanban"
+          class="sidebar__logo-img"
+        />
+      </div>
+
+      <!-- Board list -->
+      <nav class="sidebar__nav" aria-label="Boards">
+        <p class="sidebar__nav-label">
+          All Boards (<span id="board-count">0</span>)
+        </p>
+        <ul class="sidebar__board-list" id="sidebar-board-list" role="list">
+          <!-- Populated statically for this single-board app -->
+          <li>
+            <button
+              class="sidebar__board-btn sidebar__board-btn--active"
+              aria-current="page"
+              id="board-nav-btn"
+            >
+              <!-- Board icon (three vertical bars, rendered via inline SVG) -->
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <rect
+                  x="1"
+                  y="0"
+                  width="3"
+                  height="16"
+                  rx="1"
+                  fill="currentColor"
+                />
+                <rect
+                  x="6"
+                  y="0"
+                  width="3"
+                  height="16"
+                  rx="1"
+                  fill="currentColor"
+                />
+                <rect
+                  x="11"
+                  y="0"
+                  width="3"
+                  height="16"
+                  rx="1"
+                  fill="currentColor"
+                />
+              </svg>
+              Launch Career
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar footer: theme toggle + hide button -->
+      <div class="sidebar__footer">
+        <!-- Theme toggle -->
+        <div class="sidebar__theme-toggle" role="group" aria-label="Theme">
+          <!-- icon-light-theme.svg -->
+          <img
+            src="assets/icon-light-theme.svg"
+            alt="Light theme"
+            class="sidebar__theme-icon"
+          />
+          <button
+            id="theme-toggle-btn"
+            class="toggle-switch"
+            role="switch"
+            aria-checked="false"
+            aria-label="Toggle dark mode"
+          >
+            <span class="toggle-switch__thumb"></span>
+          </button>
+          <!-- icon-dark-theme.svg -->
+          <img
+            src="assets/icon-dark-theme.svg"
+            alt="Dark theme"
+            class="sidebar__theme-icon"
+          />
+        </div>
+
+        <!-- Hide sidebar button — uses icon-hide-sidebar.svg -->
+        <button
+          id="hide-sidebar-btn"
+          class="sidebar__hide-btn"
+          aria-label="Hide sidebar"
+          aria-expanded="true"
+          aria-controls="sidebar"
+        >
+          <img
+            src="assets/icon-hide-sidebar.svg"
+            alt=""
+            aria-hidden="true"
+            class="sidebar__hide-icon"
+          />
+          Hide Sidebar
+        </button>
+      </div>
+    </aside>
+
+    <button
+      id="show-sidebar-btn"
+      class="show-sidebar-btn"
+      aria-label="Show sidebar"
+      aria-expanded="false"
+      aria-controls="sidebar"
+      hidden
+    >
+      <img src="assets/icon-show-sidebar.svg" alt="" aria-hidden="true" />
+    </button>
+
+    <header class="topbar" id="topbar">
+      <!-- Logo acts as mobile menu trigger -->
+      <button
+        class="topbar__logo-btn"
+        id="mobile-menu-btn"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <!-- Logo: swaps via theme.js -->
+        <img
+          id="topbar-logo"
+          src="assets/logo-light.svg"
+          alt="Kanban"
+          class="topbar__logo-img"
+        />
+        <!-- Chevron indicator (CSS-drawn, rotates on open) -->
+        <svg
+          class="topbar__menu-chevron"
+          width="10"
+          height="7"
+          viewBox="0 0 10 7"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M1 1L5 5L9 1"
+            stroke="#635FC7"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+
+      <!-- Active board name (mobile header) -->
+      <h1 class="topbar__board-title" id="mobile-board-title">Launch Career</h1>
+
+      <!-- Add Task button (mobile header) — mirrors desktop header button -->
+      <button
+        class="btn btn--primary topbar__add-btn"
+        id="mobile-add-task-btn"
+        aria-label="Add new task"
+      >
+        +
+      </button>
+    </header>
+
+    <div
+      id="mobile-menu"
+      class="mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Navigation menu"
+      hidden
+    >
+      <!-- Scrim — clicking it closes the menu -->
+      <div
+        class="mobile-menu__scrim"
+        id="mobile-menu-scrim"
+        aria-hidden="true"
+      ></div>
+
+      <div class="mobile-menu__panel">
+        <p class="mobile-menu__nav-label">
+          All Boards (<span id="mobile-board-count">0</span>)
+        </p>
+
+        <ul class="mobile-menu__board-list" role="list">
+          <li>
+            <button
+              class="sidebar__board-btn sidebar__board-btn--active"
+              aria-current="page"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <rect
+                  x="1"
+                  y="0"
+                  width="3"
+                  height="16"
+                  rx="1"
+                  fill="currentColor"
+                />
+                <rect
+                  x="6"
+                  y="0"
+                  width="3"
+                  height="16"
+                  rx="1"
+                  fill="currentColor"
+                />
+                <rect
+                  x="11"
+                  y="0"
+                  width="3"
+                  height="16"
+                  rx="1"
+                  fill="currentColor"
+                />
+              </svg>
+              Launch Career
+            </button>
+          </li>
+        </ul>
+
+        <!-- Theme toggle (mirrors sidebar) -->
+        <div class="mobile-menu__theme-toggle" role="group" aria-label="Theme">
+          <img
+            src="assets/icon-light-theme.svg"
+            alt="Light theme"
+            class="sidebar__theme-icon"
+          />
+          <button
+            id="mobile-theme-toggle-btn"
+            class="toggle-switch"
+            role="switch"
+            aria-checked="false"
+            aria-label="Toggle dark mode"
+          >
+            <span class="toggle-switch__thumb"></span>
+          </button>
+          <img
+            src="assets/icon-dark-theme.svg"
+            alt="Dark theme"
+            class="sidebar__theme-icon"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="content-wrapper" id="content-wrapper">
+      <!-- Board header (desktop) -->
+      <header class="board-header">
+        <h1 class="board-header__title" id="board-title">Launch Career</h1>
+        <button
+          class="btn btn--primary"
+          id="add-task-btn"
+          aria-label="Add new task"
+        >
+          + Add New Task
+        </button>
+      </header>
+
+      <!-- Loading state -->
+      <div
+        id="loading-state"
+        class="state-message"
+        role="status"
+        aria-live="polite"
+        hidden
+      >
+        <p>Loading tasks…</p>
+      </div>
+
+      <!-- Error state -->
+      <div
+        id="error-state"
+        class="state-message state-message--error"
+        role="alert"
+        hidden
+      >
+        <p id="error-text">Failed to load tasks. Please try again.</p>
+        <button class="btn btn--secondary" id="retry-btn">Retry</button>
+      </div>
+
+      <!-- Kanban board — three columns -->
+      <main class="board" id="board" aria-label="Kanban board">
+        <!-- TODO column -->
+        <section class="column" data-status="todo" aria-label="Todo column">
+          <header class="column__header">
+            <span
+              class="column__dot column__dot--todo"
+              aria-hidden="true"
+            ></span>
+            <h2 class="column__title">
+              Todo (<span class="column__count" id="count-todo">0</span>)
+            </h2>
+          </header>
+          <ul
+            class="column__tasks"
+            id="tasks-todo"
+            role="list"
+            aria-label="Todo tasks"
+          >
+            <!-- Task cards injected here by render.js -->
+          </ul>
+        </section>
+
+        <!-- DOING column -->
+        <section class="column" data-status="doing" aria-label="Doing column">
+          <header class="column__header">
+            <span
+              class="column__dot column__dot--doing"
+              aria-hidden="true"
+            ></span>
+            <h2 class="column__title">
+              Doing (<span class="column__count" id="count-doing">0</span>)
+            </h2>
+          </header>
+          <ul
+            class="column__tasks"
+            id="tasks-doing"
+            role="list"
+            aria-label="Doing tasks"
+          >
+            <!-- Task cards injected here by render.js -->
+          </ul>
+        </section>
+
+        <!-- DONE column -->
+        <section class="column" data-status="done" aria-label="Done column">
+          <header class="column__header">
+            <span
+              class="column__dot column__dot--done"
+              aria-hidden="true"
+            ></span>
+            <h2 class="column__title">
+              Done (<span class="column__count" id="count-done">0</span>)
+            </h2>
+          </header>
+          <ul
+            class="column__tasks"
+            id="tasks-done"
+            role="list"
+            aria-label="Done tasks"
+          >
+            <!-- Task cards injected here by render.js -->
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <dialog
+      id="task-modal"
+      class="modal"
+      aria-labelledby="modal-title"
+      aria-modal="true"
+    >
+      <div class="modal__content">
+        <!-- Modal heading: "Add New Task" or "Edit Task" -->
+        <h2 class="modal__title" id="modal-title">Add New Task</h2>
+
+        <!-- Title field -->
+        <div class="modal__field">
+          <label class="modal__label" for="modal-task-title">Title</label>
+          <input
+            type="text"
+            id="modal-task-title"
+            class="modal__input"
+            placeholder="e.g. Take coffee break"
+            maxlength="200"
+            required
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Description field -->
+        <div class="modal__field">
+          <label class="modal__label" for="modal-task-description"
+            >Description</label
+          >
+          <textarea
+            id="modal-task-description"
+            class="modal__textarea"
+            placeholder="e.g. It's always good to take a break. This 15-minute break will recharge the batteries a little."
+            rows="4"
+          ></textarea>
+        </div>
+
+        <!-- Status selector -->
+        <div class="modal__field">
+          <label class="modal__label" for="modal-task-status">Status</label>
+          <div class="modal__select-wrapper">
+            <select
+              id="modal-task-status"
+              class="modal__select"
+              aria-label="Task status"
+            >
+              <option value="todo">Todo</option>
+              <option value="doing">Doing</option>
+              <option value="done">Done</option>
+            </select>
+            <!-- Custom chevron (CSS-positioned) -->
+            <svg
+              class="modal__select-chevron"
+              width="10"
+              height="7"
+              viewBox="0 0 10 7"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M1 1L5 5L9 1"
+                stroke="#635FC7"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Modal actions -->
+        <div class="modal__actions">
+          <!-- Save: label set by modal.js ("Create Task" or "Save Changes") -->
+          <button
+            type="button"
+            id="modal-save-btn"
+            class="btn btn--primary btn--full"
+          >
+            Create Task
+          </button>
+
+          <!-- Delete: only visible in edit mode, injected/shown by modal.js -->
+          <button
+            type="button"
+            id="modal-delete-btn"
+            class="btn btn--destructive btn--full"
+            hidden
+          >
+            Delete Task
+          </button>
+        </div>
+
+        <!-- Close button (top-right X) -->
+        <button
+          class="modal__close-btn"
+          id="modal-close-btn"
+          aria-label="Close modal"
+        >
+         
+        </button>
+      </div>
+    </dialog>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
